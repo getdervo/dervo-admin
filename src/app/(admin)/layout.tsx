@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { DervoMark } from "@/components/dervo-mark";
 import { supabaseServer } from "@/lib/supabase/server";
+import { isConfigured } from "@/lib/supabase/config";
+import { NotConfigured } from "@/components/not-configured";
 import { signOut } from "../auth/actions";
 import { NavLink } from "./nav-link";
 
@@ -10,6 +12,12 @@ export default async function AdminLayout({
 }: {
   children: ReactNode;
 }) {
+  // Checked before touching Supabase so a fresh deploy explains itself instead
+  // of throwing behind the root redirect.
+  if (!isConfigured()) {
+    return <NotConfigured />;
+  }
+
   const supabase = await supabaseServer();
 
   // Re-checked here as well as in the proxy. Neither is the security boundary —

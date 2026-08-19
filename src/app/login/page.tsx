@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import { DervoMark } from "@/components/dervo-mark";
+import { NotConfigured } from "@/components/not-configured";
+import { isConfigured } from "@/lib/supabase/config";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
   title: "Sign in — Dervo Admin",
 };
 
+// Env is read per request, so this must not be prerendered at build time.
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
+  // Otherwise the form renders fine and only fails on submit.
+  if (!isConfigured()) {
+    return <NotConfigured />;
+  }
+
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-[380px]">
