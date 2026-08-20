@@ -51,7 +51,10 @@ function collect(sections: Section[]) {
       switch (field.kind) {
         case "row":
           for (const input of field.inputs) {
-            add(input.id, input.label ?? field.label, heading);
+            // Inputs without their own label (the three "offers" boxes) would
+            // otherwise all repeat the question text; the placeholder is what
+            // distinguishes them on screen.
+            add(input.id, input.label ?? input.placeholder ?? field.label, heading);
           }
           if (field.follow) add(field.follow.id, field.follow.label, heading);
           break;
